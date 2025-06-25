@@ -1,0 +1,9 @@
+node_modules
+
+# See https://nextjs.org/docs/basic-features/eslint#lint-staged
+
+.next/
+.swc/
+
+# local env files
+.env.local
