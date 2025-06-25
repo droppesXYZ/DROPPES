@@ -48,26 +48,16 @@ export async function POST(request: NextRequest) {
   try {
     const token = request.headers.get('authorization')?.replace('Bearer ', '')
     
-    console.log('=== DEBUG TOKEN ===')
-    console.log('Token recebido:', token ? 'SIM' : 'NÃO')
-    console.log('Tamanho do token:', token?.length || 0)
-    console.log('Primeiros 50 chars:', token?.substring(0, 50))
-    console.log('JWT_SECRET existe:', !!JWT_SECRET)
-    console.log('JWT_SECRET length:', JWT_SECRET?.length || 0)
-    
     if (!token) {
       return NextResponse.json({ error: 'Token não fornecido' }, { status: 401 })
     }
 
     const decoded = verifyToken(token)
-    console.log('Token decodificado:', decoded ? 'SIM' : 'NÃO')
-    
     if (!decoded) {
       return NextResponse.json({ error: 'Token inválido' }, { status: 401 })
     }
 
     const userId = decoded.userId
-    console.log('UserId extraído:', userId)
 
     // Buscar dados do usuário para verificar se é premium
     const user = await userService.findById(userId)

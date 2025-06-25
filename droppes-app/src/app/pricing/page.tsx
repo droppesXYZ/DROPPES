@@ -22,6 +22,7 @@ import {
   Sparkles,
   ArrowLeft
 } from 'lucide-react'
+import { toast } from 'react-hot-toast'
 
 export default function PricingPage() {
   const { isAuthenticated } = useAuthStore()
@@ -64,8 +65,8 @@ export default function PricingPage() {
 
     try {
       const token = getCookie('token')
-      console.log('Token obtido:', token ? 'Token existe' : 'Token não encontrado')
-      console.log('Enviando pagamento:', { plan: selectedPlan, transactionHash })
+      // console.log('Token obtido:', token ? 'Token existe' : 'Token não encontrado')
+      // console.log('Enviando pagamento:', { plan: selectedPlan, transactionHash })
       
       const response = await fetch('/api/payments', {
         method: 'POST',
@@ -75,18 +76,18 @@ export default function PricingPage() {
         },
         body: JSON.stringify({
           plan: selectedPlan,
-          transactionHash
+          transactionHash,
+          token
         })
       })
 
-      console.log('Response status:', response.status)
-      console.log('Response ok:', response.ok)
+      // console.log('Response status:', response.status)
+      // console.log('Response ok:', response.ok)
 
       const data = await response.json()
 
       if (response.ok) {
-        // Sucesso - mostrar mensagem e fechar modal
-        alert('Pagamento enviado com sucesso! Aguarde a verificação do administrador.')
+        toast.success('Pagamento processado com sucesso! Bem-vindo ao Premium.')
         setIsPaymentDialogOpen(false)
         setTransactionHash('')
         setSelectedPlan(null)
