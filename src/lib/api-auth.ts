@@ -3,7 +3,7 @@ import { getCurrentUser, requireAuth, requireAdmin } from './auth'
 import type { User } from './types'
 
 /**
- * Helper para autenticação em APIs
+ * Helper para autenticação em APIs - Sistema unificado
  * Retorna o usuário autenticado ou null se não autenticado
  */
 export async function getApiUser(request: NextRequest): Promise<User | null> {
@@ -22,7 +22,7 @@ export async function requireApiAuth(request: NextRequest): Promise<User | NextR
   try {
     const user = await requireAuth(request)
     return user
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Não autorizado' },
       { status: 401 }
@@ -38,8 +38,8 @@ export async function requireApiAdmin(request: NextRequest): Promise<User | Next
   try {
     const user = await requireAdmin(request)
     return user
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Acesso negado'
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : 'Acesso negado'
     const statusCode = errorMessage === 'Unauthorized' ? 401 : 403
     
     return NextResponse.json(
