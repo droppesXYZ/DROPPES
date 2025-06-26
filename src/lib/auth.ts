@@ -4,18 +4,17 @@ import { NextRequest } from 'next/server'
 import { userService } from './firestore'
 import type { User } from './types'
 
-// ✅ MELHORIA: Verificar se JWT_SECRET existe em produção
 const JWT_SECRET = process.env.JWT_SECRET
-const isProduction = process.env.NODE_ENV === 'production' && !process.env.VERCEL_URL?.includes('-')
 
-if (!JWT_SECRET) {
-  if (isProduction) {
-    throw new Error('JWT_SECRET is required in production')
+// Verificação de segurança que roda APENAS no servidor.
+if (typeof window === 'undefined') {
+  if (!JWT_SECRET && process.env.NODE_ENV === 'production') {
+    throw new Error('CRITICAL: JWT_SECRET não está configurado nas variáveis de ambiente de produção.')
   }
-  console.warn('⚠️  JWT_SECRET não configurado. Usando fallback para preview/desenvolvimento.')
 }
 
-const FALLBACK_SECRET = 'development-secret-key-change-in-production-88c5440b7469040a37334518be224a2c'
+// Fallback para ambientes de desenvolvimento/preview.
+const FALLBACK_SECRET = 'insecure-development-fallback-key-88c5440b7469040a'
 const secret = JWT_SECRET || FALLBACK_SECRET
 
 export async function hashPassword(password: string): Promise<string> {
