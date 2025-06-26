@@ -1,31 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import jwt from 'jsonwebtoken'
+import { getCurrentUser } from '@/lib/auth'
 import { protocolService, investmentService, taskService } from '@/lib/firestore'
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
-
-function verifyToken(token: string) {
-  try {
-    return jwt.verify(token, JWT_SECRET) as { userId: string; email: string }
-  } catch {
-    return null
-  }
-}
 
 export async function GET(request: NextRequest) {
   try {
-    const token = request.headers.get('authorization')?.replace('Bearer ', '')
+    const user = await getCurrentUser(request)
     
-    if (!token) {
-      return NextResponse.json({ error: 'Token não fornecido' }, { status: 401 })
+    if (!user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
-    const decoded = verifyToken(token)
-    if (!decoded) {
-      return NextResponse.json({ error: 'Token inválido' }, { status: 401 })
-    }
-
-    const userId = decoded.userId
+    const userId = user.id
 
     // Buscar protocolos do usuário
     const protocols = await protocolService.findByUserId(userId)

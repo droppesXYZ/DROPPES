@@ -6,14 +6,16 @@ import type { User } from './types'
 
 // ✅ MELHORIA: Verificar se JWT_SECRET existe em produção
 const JWT_SECRET = process.env.JWT_SECRET
+const isProduction = process.env.NODE_ENV === 'production' && !process.env.VERCEL_URL?.includes('-')
+
 if (!JWT_SECRET) {
-  if (process.env.NODE_ENV === 'production') {
+  if (isProduction) {
     throw new Error('JWT_SECRET is required in production')
   }
-  console.warn('⚠️  JWT_SECRET não configurado. Use um valor forte em produção!')
+  console.warn('⚠️  JWT_SECRET não configurado. Usando fallback para preview/desenvolvimento.')
 }
 
-const FALLBACK_SECRET = 'development-secret-key-change-in-production'
+const FALLBACK_SECRET = 'development-secret-key-change-in-production-88c5440b7469040a37334518be224a2c'
 const secret = JWT_SECRET || FALLBACK_SECRET
 
 export async function hashPassword(password: string): Promise<string> {

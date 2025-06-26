@@ -1,34 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
-import jwt from 'jsonwebtoken'
+import { requireApiAuth, isErrorResponse } from '@/lib/api-auth'
 import { protocolService } from '@/lib/firestore'
 import { FREE_PROTOCOL_LIMIT } from '@/lib/constants'
 import { isUserPremium } from '@/lib/auth'
-import { userService } from '@/lib/firestore'
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
-
-function verifyToken(token: string) {
-  try {
-    return jwt.verify(token, JWT_SECRET) as { userId: string; email: string }
-  } catch {
-    return null
-  }
-}
 
 export async function GET(request: NextRequest) {
   try {
-    const token = request.headers.get('authorization')?.replace('Bearer ', '')
-    
-    if (!token) {
-      return NextResponse.json({ error: 'Token não fornecido' }, { status: 401 })
+    const userOrError = await requireApiAuth(request)
+    if (isErrorResponse(userOrError)) {
+      return userOrError
     }
 
-    const decoded = verifyToken(token)
-    if (!decoded) {
-      return NextResponse.json({ error: 'Token inválido' }, { status: 401 })
-    }
-
-    const userId = decoded.userId
+    const userId = userOrError.id
 
     // Buscar protocolos do usuário
     const protocols = await protocolService.findByUserId(userId)
@@ -46,27 +29,13 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const token = request.headers.get('authorization')?.replace('Bearer ', '')
-    
-    if (!token) {
-      return NextResponse.json({ error: 'Token não fornecido' }, { status: 401 })
+    const userOrError = await requireApiAuth(request)
+    if (isErrorResponse(userOrError)) {
+      return userOrError
     }
 
-    const decoded = verifyToken(token)
-    if (!decoded) {
-      return NextResponse.json({ error: 'Token inválido' }, { status: 401 })
-    }
-
-    const userId = decoded.userId
-
-    // Buscar dados do usuário para verificar se é premium
-    const user = await userService.findById(userId)
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Usuário não encontrado' },
-        { status: 404 }
-      )
-    }
+    const user = userOrError
+    const userId = user.id
 
     // Verificar limite de protocolos para usuários não premium
     if (!isUserPremium(user)) {
