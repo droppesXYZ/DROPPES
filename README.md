@@ -1,5 +1,7 @@
 # Droppes - Gerenciador de Airdrops
 
+**🚀 Deploy Status: Environment variables configured ✅**
+
 Plataforma completa para gerenciar seus investimentos em protocolos cripto e maximizar seus airdrops.
 
 ## 🚀 Tecnologias
