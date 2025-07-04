@@ -2,8 +2,6 @@
 // Execute com: npx tsx src/lib/migrate-userid-to-email.ts
 
 import { userService, protocolService, investmentService, taskService } from './firestore'
-import { getDocs, query, collection, where, updateDoc } from 'firebase/firestore'
-import { FirebaseUser } from './firebase-user'
 
 async function isEmail(str: string) {
   // Verifica se é um email simples
@@ -31,7 +29,7 @@ async function migrateCollection(collectionName: string, findAll: () => Promise<
 async function main() {
   console.log('--- MIGRAÇÃO userId (UID -> email) ---')
   await migrateCollection('protocols', async () => await protocolService.findAll(), protocolService.update)
-  await migrateCollection('investments', async () => await investmentService.findAll(), investmentService.update)
+  // await migrateCollection('investments', async () => await investmentService.findAll(), investmentService.update)
   await migrateCollection('tasks', async () => await taskService.findAll(), taskService.update)
   console.log('--- FIM DA MIGRAÇÃO ---')
 }
