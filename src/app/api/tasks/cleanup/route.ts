@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { taskService } from '@/lib/firestore'
-import { requireAuthenticatedUser, isErrorResponse } from '@/lib/api-auth'
+import { NextResponse } from 'next/server';
+import { isErrorResponse } from '@/lib/api-auth';
+import { taskService } from '@/lib/firestore';
+import { requireAuthenticatedUser } from '@/lib/api-auth';
 
-export async function DELETE(request: NextRequest) {
+export async function POST() {
   try {
     const userOrError = await requireAuthenticatedUser();
     if (isErrorResponse(userOrError)) return userOrError;

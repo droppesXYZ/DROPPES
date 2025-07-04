@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
 import { useAuthStore } from '@/lib/store'
-import { useUser, useStackApp } from '@stackframe/stack'
+import { useUser } from '@stackframe/stack'
 import { APP_NAME } from '@/lib/constants'
 import { 
   User, 
@@ -39,7 +39,6 @@ export function Header() {
   const pathname = usePathname()
   const { user, isAuthenticated, logout } = useAuthStore()
   const stackUser = useUser()
-  const stackApp = useStackApp()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const handleLogout = async () => {

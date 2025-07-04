@@ -37,7 +37,6 @@ import {
   Edit2,
   MoreVertical,
   Palette,
-  Link2,
   Trash2,
   X as XIcon,
 } from 'lucide-react'
@@ -116,13 +115,6 @@ export default function DashboardPage() {
     websiteUrl: '',
     isLoadingMetadata: false
   })
-  const [extractedMetadata, setExtractedMetadata] = useState<{
-    logo?: string
-    favicon?: string
-    title?: string
-    description?: string
-    colors?: string[]
-  } | null>(null)
 
   // Estados dos filtros
   const [filters, setFilters] = useState({
@@ -294,7 +286,6 @@ export default function DashboardPage() {
       websiteUrl: '',
       isLoadingMetadata: false
     })
-    setExtractedMetadata(null)
     clearError()
   }
 
@@ -908,7 +899,7 @@ export default function DashboardPage() {
 
   // Função utilitária para escurecer cores
   const darkenColor = (hex: string, percent: number = 30): string => {
-    if (!hex || !hex.startsWith('#')) return '#000000'
+    if (!hex || hex.length < 4) return '#000000'
     
     const num = parseInt(hex.slice(1), 16)
     const amt = Math.round(2.55 * percent)
@@ -933,46 +924,8 @@ export default function DashboardPage() {
       websiteUrl: protocol.officialUrl || '',
       isLoadingMetadata: false
     })
-    setExtractedMetadata(null)
     setActiveModal('card-editor')
     setIsModalOpen(true)
-  }
-
-  const extractWebsiteMetadata = async (url: string) => {
-    setCardEditor(prev => ({ ...prev, isLoadingMetadata: true }))
-    
-    try {
-      // Usar uma API de extração de metadados
-      const response = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`)
-      const data = await response.json()
-      
-      if (data.status === 'success' && data.data) {
-        const metadata = {
-          logo: data.data.logo?.url,
-          favicon: data.data.favicon?.url,
-          title: data.data.title,
-          description: data.data.description,
-          colors: data.data.palette ? data.data.palette.map((color: { color: string }) => color.color) : []
-        }
-        
-        setExtractedMetadata(metadata)
-        
-        // Auto-aplicar a primeira cor se disponível
-        if (metadata.colors && metadata.colors.length > 0) {
-          const primaryColor = metadata.colors[0]
-          setCardEditor(prev => ({ 
-            ...prev, 
-            backgroundColor: primaryColor,
-            textColor: darkenColor(primaryColor, 50)
-          }))
-        }
-      }
-    } catch (error) {
-      console.error('Erro ao extrair metadados:', error)
-      setError('Erro ao extrair informações do website')
-    } finally {
-      setCardEditor(prev => ({ ...prev, isLoadingMetadata: false }))
-    }
   }
 
   const handleCardEditorSubmit = async (e: React.FormEvent) => {
@@ -991,7 +944,7 @@ export default function DashboardPage() {
       const updateData = {
         primaryColor: cardEditor.backgroundColor,
         textColor: cardEditor.textColor,
-        logoUrl: extractedMetadata?.logo || extractedMetadata?.favicon || selectedProtocol.logoUrl,
+        logoUrl: selectedProtocol.logoUrl,
         officialUrl: cardEditor.websiteUrl
       }
       

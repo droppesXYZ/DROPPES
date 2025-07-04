@@ -1,10 +1,8 @@
 'use client'
 
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { APP_NAME } from '@/lib/constants'
 import { StaticBackground } from '@/components/ui/static-background'
@@ -58,21 +56,10 @@ export default function RegisterPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* Stack Auth SignUp Component com estilo customizado */}
-            <div className="stack-auth-signup">
-              <SignUp 
-                fullPage={false}
-                automaticRedirect={false}
-                appearance={{
-                  elements: {
-                    input: 'bg-slate-800 text-white placeholder:text-slate-400',
-                    label: 'text-slate-200',
-                    icon: 'text-slate-200',
-                    button: 'bg-blue-600 text-white',
-                  }
-                }}
-              />
-            </div>
+            <SignUp
+              fullPage={false}
+              automaticRedirect={false}
+            />
             
             <div className="text-center mt-6">
               <span className="text-slate-400">Já tem uma conta? </span>

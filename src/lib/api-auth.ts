@@ -14,7 +14,7 @@ const ADMIN_EMAILS = [
  * Retorna o usuário autenticado ou null se não autenticado
  * @deprecated Use getAuthenticatedUser() instead
  */
-export async function getApiUser(request: NextRequest): Promise<User | null> {
+export async function getApiUser(): Promise<User | null> {
   try {
     const stackUser = await stackServerApp.getUser();
     if (!stackUser) return null;
@@ -31,8 +31,8 @@ export async function getApiUser(request: NextRequest): Promise<User | null> {
  * Retorna o usuário ou uma response de erro
  * @deprecated Use requireAuthenticatedUser() instead
  */
-export async function requireApiAuth(request: NextRequest): Promise<User | NextResponse> {
-  const user = await getApiUser(request);
+export async function requireApiAuth(): Promise<User | NextResponse> {
+  const user = await getApiUser();
   if (!user) {
     return NextResponse.json(
       { error: 'Não autorizado' },
@@ -47,8 +47,8 @@ export async function requireApiAuth(request: NextRequest): Promise<User | NextR
  * Retorna o usuário admin ou uma response de erro
  * @deprecated Use requireAuthenticatedAdmin() instead
  */
-export async function requireApiAdmin(request: NextRequest): Promise<User | NextResponse> {
-  const user = await getApiUser(request);
+export async function requireApiAdmin(): Promise<User | NextResponse> {
+  const user = await getApiUser();
   if (!user) {
     return NextResponse.json(
       { error: 'Não autorizado' },
@@ -86,7 +86,7 @@ export async function getUserOrError() {
  * Obtém o usuário local do Firestore baseado no email do Stack Auth
  * Se o usuário não existir, cria um novo com permissões de admin se o email estiver na lista
  */
-export async function getLocalUserOrCreate(stackUser: any): Promise<User | null> {
+export async function getLocalUserOrCreate(stackUser: { primaryEmail?: string | null, displayName?: string | null }): Promise<User | null> {
   try {
     const userEmail = stackUser.primaryEmail;
     if (!userEmail) return null;

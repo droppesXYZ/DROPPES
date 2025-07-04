@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAuthenticatedUser, isErrorResponse } from '@/lib/api-auth'
-import { protocolService } from '@/lib/firestore'
+import { protocolService, investmentService, taskService, airdropService, protocolLinkService } from '@/lib/firestore'
 import { FREE_PROTOCOL_LIMIT } from '@/lib/constants'
 
 // Função para verificar se o usuário é premium (agora busca no nosso DB)
@@ -10,7 +10,7 @@ async function isUserPremium(userEmail: string): Promise<boolean> {
   return localUser?.isPremium || false;
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const userOrError = await requireAuthenticatedUser();
     if (isErrorResponse(userOrError)) {

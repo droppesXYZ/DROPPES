@@ -11,7 +11,10 @@ import {
   User, 
   Shield, 
   Settings,
+  ExternalLink,
 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -67,19 +70,19 @@ export default function SettingsPage() {
               Atualize suas informações pessoais e configurações de segurança
             </CardDescription>
           </CardHeader>
-                     <CardContent>
-             <div className="text-center py-8">
-               <p className="text-slate-300 mb-4">
-                 Para gerenciar suas configurações de conta e segurança, visite:
-               </p>
-               <a 
-                 href="/handler/account-settings" 
-                 className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200"
-               >
-                 Configurações da Conta
-               </a>
-             </div>
-           </CardContent>
+          <CardContent>
+            <div className="text-center py-8">
+              <p className="text-slate-300 mb-4">
+                Para gerenciar suas configurações de conta e segurança, visite:
+              </p>
+              <Link href="/handler/account-settings/" passHref>
+                <Button variant="outline" className="w-full">
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  Ir para Gerenciamento de Conta
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
         </Card>
 
         {/* Informações Premium */}

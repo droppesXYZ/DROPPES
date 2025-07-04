@@ -1,17 +1,22 @@
 'use client'
 
-import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import { useAuthStore, useUIStore } from '@/lib/store'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
 import { APP_NAME } from '@/lib/constants'
 import { StaticBackground } from '@/components/ui/static-background'
 import { SignIn, useUser } from "@stackframe/stack"
-import { useEffect } from 'react'
-import { useAuthStore } from '@/lib/store'
+
+// Schema de validação
+const formSchema = z.object({
+  // ... existing code ...
+})
 
 export default function LoginPage() {
   const router = useRouter()

@@ -8,7 +8,7 @@ const ADMIN_EMAILS = [
   'droppes.xyz@gmail.com'
 ]
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     const userOrError = await getAuthenticatedUser();
     if (isErrorResponse(userOrError)) {

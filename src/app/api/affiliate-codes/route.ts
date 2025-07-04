@@ -3,7 +3,7 @@ import { requireAuthenticatedAdmin, isErrorResponse } from '@/lib/api-auth'
 import { affiliateCodeService } from '@/lib/firestore'
 
 // GET /api/affiliate-codes - Listar todos os códigos de afiliado (apenas admin)
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const userOrResponse = await requireAuthenticatedAdmin()
     if (isErrorResponse(userOrResponse)) {

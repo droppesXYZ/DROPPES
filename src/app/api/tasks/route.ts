@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { taskService } from '@/lib/firestore'
-import { createLocalDate } from '@/lib/utils'
-import { requireAuthenticatedUser, isErrorResponse } from '@/lib/api-auth'
+// import { createLocalDate } from '@/lib/utils' // Import não utilizado
+import { requireAuthenticatedUser, isErrorResponse, getUserOrError } from '@/lib/api-auth'
 
 export async function GET(request: NextRequest) {
   try {

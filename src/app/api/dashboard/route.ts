@@ -15,13 +15,9 @@ export async function GET() {
     const [
       totalInvested,
       pendingTasksCount,
-      completedTasksCount,
-      activeProtocolsCount
     ] = await Promise.all([
       protocolService.getTotalInvestedByUser(userOrError.email),
       taskService.getTasksCount(protocolIds, false),
-      taskService.getTasksCount(protocolIds, true),
-      protocolService.getActiveProtocolsCount(userOrError.email),
     ]);
 
     // Para cada protocolo, calcular o totalInvested do usuário autenticado
@@ -34,7 +30,6 @@ export async function GET() {
     }))
 
     // Calcular totais diretamente dos protocolos já filtrados
-    const totalInvestedDirect = protocolsWithInvested.reduce((sum, p) => sum + (p.totalInvested || 0), 0)
     const totalProtocols = protocolsWithInvested.length
 
     // Buscar todos os airdrops do usuário
