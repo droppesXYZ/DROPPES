@@ -15,7 +15,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const userOrResponse = await requireApiAdmin(request)
+    const userOrResponse = await requireApiAdmin()
     if (isErrorResponse(userOrResponse)) {
       return userOrResponse
     }
@@ -46,7 +46,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const userOrResponse = await requireApiAdmin(request)
+    const userOrResponse = await requireApiAdmin()
     if (isErrorResponse(userOrResponse)) {
       return userOrResponse
     }
@@ -110,7 +110,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const userOrResponse = await requireApiAdmin(request)
+    const userOrResponse = await requireApiAdmin()
     if (isErrorResponse(userOrResponse)) {
       return userOrResponse
     }
