@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
       
       const usagesWithDetails = await Promise.all(
         codeUsages.map(async usage => {
-          const user = await userService.findById(usage.userId)
+          const user = await userService.findByEmail(usage.userEmail)
           const payment = await paymentService.findById(usage.paymentId)
           
           let planName = 'Desconhecido'
