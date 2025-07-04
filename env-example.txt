@@ -1,0 +1,23 @@
+# Stack Auth Configuration
+# Você precisa configurar estas variáveis com suas chaves reais do Stack Auth
+NEXT_PUBLIC_STACK_PROJECT_ID=your-project-id
+NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY=your-publishable-client-key
+STACK_SECRET_SERVER_KEY=your-secret-server-key
+
+# Firebase Configuration (manter suas configurações existentes)
+NEXT_PUBLIC_FIREBASE_API_KEY=your-firebase-api-key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
+
+# JWT Secret (manter para compatibilidade)
+JWT_SECRET=insecure-development-fallback-key-88c5440b7469040a
+
+# Email Configuration (se necessário)
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASSWORD=your-email-password
+
+# Payment Wallet Address
+NEXT_PUBLIC_PAYMENT_WALLET_ADDRESS=Dm5ThWMqJ6HgroFJuaw7EhWq9ZmctuDSf5DAuaPvfp73 
