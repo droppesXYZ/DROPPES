@@ -67,12 +67,14 @@ export async function PATCH(
       const user = await userService.findByEmail(payment.userEmail)
       if (user && user.isPremium) {
         // Verificar se tem outros pagamentos válidos
-        const validPayments = await paymentService.findByUserEmail(user.email)
-        const hasOtherValidPayment = validPayments.some(p => 
-          p.id !== payment.id && 
-          p.status === PaymentStatus.VERIFIED &&
-          p.validUntil > new Date()
-        )
+        // A lógica para revogar o premium foi removida temporariamente
+        // para evitar erros de build.
+        // const validPayments = await paymentService.findByUserEmail(user.email)
+        // const hasOtherValidPayment = validPayments.some(p => 
+        //   p.id !== payment.id && 
+        //   p.status === PaymentStatus.VERIFIED &&
+        //   p.validUntil > new Date()
+        // )
       }
 
       return NextResponse.json({ 
