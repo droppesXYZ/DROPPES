@@ -2,6 +2,8 @@
 // Execute com: npx tsx src/lib/migrate-userid-to-email.ts
 
 import { userService, protocolService, investmentService, taskService } from './firestore'
+import { getDocs, query, collection, where, updateDoc } from 'firebase/firestore'
+import { FirebaseUser } from './firebase-user'
 
 async function isEmail(str: string) {
   // Verifica se é um email simples

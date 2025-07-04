@@ -9,8 +9,7 @@ import Image from 'next/image'
 import { APP_NAME } from '@/lib/constants'
 import { 
   User, 
-  Shield, 
-  Settings,
+  Shield,
   ExternalLink,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'

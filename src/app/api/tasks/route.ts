@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { taskService } from '@/lib/firestore'
 // import { createLocalDate } from '@/lib/utils' // Import não utilizado
-import { requireAuthenticatedUser, isErrorResponse, getUserOrError } from '@/lib/api-auth'
+import { requireAuthenticatedUser, isErrorResponse } from '@/lib/api-auth'
 
 export async function GET(request: NextRequest) {
   try {
-    const userOrError = await requireAuthenticatedUser();
-    if (isErrorResponse(userOrError)) return userOrError;
-
     const { searchParams } = new URL(request.url)
     const protocolId = searchParams.get('protocolId')
 
@@ -15,8 +12,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Protocol ID é obrigatório' }, { status: 400 })
     }
 
+    const userOrError = await requireAuthenticatedUser()
+    if (isErrorResponse(userOrError)) {
+      return userOrError
+    }
+
+    const userEmail = userOrError.email
+
     // Buscar tasks do protocolo APENAS do usuário autenticado
-    const tasks = await taskService.findByProtocolIdAndUser(protocolId, userOrError.email)
+    const tasks = await taskService.findByProtocolIdAndUser(protocolId, userEmail)
     return NextResponse.json(tasks)
   } catch (error) {
     console.error('Erro ao buscar tasks:', error)
@@ -26,8 +30,10 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const userOrError = await requireAuthenticatedUser();
-    if (isErrorResponse(userOrError)) return userOrError;
+    const userOrError = await requireAuthenticatedUser()
+    if (isErrorResponse(userOrError)) {
+      return userOrError
+    }
 
     const { title, description, isDaily, dueDate, protocolId } = await request.json()
 

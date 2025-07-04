@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getAuthenticatedUser, isErrorResponse } from '@/lib/api-auth'
+import { NextResponse } from 'next/server'
+import { requireAuthenticatedUser, isErrorResponse } from '@/lib/api-auth'
 import { userService } from '@/lib/firestore'
 
 // Lista de emails que devem ser automaticamente promovidos a admin
@@ -10,7 +10,7 @@ const ADMIN_EMAILS = [
 
 export async function POST() {
   try {
-    const userOrError = await getAuthenticatedUser();
+    const userOrError = await requireAuthenticatedUser();
     if (isErrorResponse(userOrError)) {
       return userOrError;
     }
