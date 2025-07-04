@@ -1,0 +1,177 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  password     String
+  name         String?
+  isPremium    Boolean   @default(false)
+  premiumUntil DateTime?
+  isAdmin      Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  protocols       Protocol[]
+  tasks           Task[]
+  payments        Payment[]
+  affiliateCodes  AffiliateCode[] // Códigos criados pelo admin
+  affiliateUsages AffiliateUsage[] // Uso de códigos pelo usuário
+
+  @@map("users")
+}
+
+model Protocol {
+  id            String    @id @default(cuid())
+  name          String
+  network       String // ex: Ethereum, Arbitrum
+  officialUrl   String
+  twitterHandle String?
+  farmStartDate DateTime?
+  dailyMissions Boolean   @default(false)
+  logoUrl       String?
+  primaryColor  String? // cor primária para o card
+  totalInvested Float     @default(0)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  investments Investment[]
+  tasks       Task[]
+
+  @@map("protocols")
+}
+
+model Investment {
+  id          String         @id @default(cuid())
+  amount      Float
+  type        InvestmentType // DEPOSIT ou WITHDRAW
+  date        DateTime
+  description String?
+  createdAt   DateTime       @default(now())
+
+  protocolId String
+  protocol   Protocol @relation(fields: [protocolId], references: [id], onDelete: Cascade)
+
+  @@map("investments")
+}
+
+model Task {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  isCompleted Boolean   @default(false)
+  isDaily     Boolean   @default(false)
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  protocolId String?
+  protocol   Protocol? @relation(fields: [protocolId], references: [id], onDelete: Cascade)
+
+  @@map("tasks")
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  plan              PaymentPlan // MONTHLY, QUARTERLY, SEMI_ANNUAL
+  amount            Float
+  originalAmount    Float? // Valor original antes do desconto
+  discountAmount    Float? // Valor do desconto aplicado
+  affiliateCodeUsed String? // Código de afiliado usado
+  transactionHash   String?
+  status            PaymentStatus @default(PENDING)
+  verifiedAt        DateTime?
+  validUntil        DateTime
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  affiliateUsage AffiliateUsage?
+
+  @@map("payments")
+}
+
+model TwitterCache {
+  id          String   @id @default(cuid())
+  handle      String   @unique
+  tweets      String // JSON string with tweet data
+  lastUpdated DateTime @default(now())
+
+  @@map("twitter_cache")
+}
+
+enum InvestmentType {
+  DEPOSIT
+  WITHDRAW
+}
+
+enum PaymentPlan {
+  MONTHLY
+  QUARTERLY
+  SEMI_ANNUAL
+}
+
+enum PaymentStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  EXPIRED
+}
+
+// Novos modelos para o sistema de afiliados
+model AffiliateCode {
+  id              String   @id @default(cuid())
+  code            String   @unique
+  influencerName  String
+  influencerEmail String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  createdByUserId String
+  createdBy       User   @relation(fields: [createdByUserId], references: [id], onDelete: Cascade)
+
+  usages AffiliateUsage[]
+
+  @@map("affiliate_codes")
+}
+
+model AffiliateUsage {
+  id               String   @id @default(cuid())
+  originalAmount   Float // Valor original do plano
+  discountAmount   Float // Valor do desconto (20%)
+  finalAmount      Float // Valor final pago
+  commissionAmount Float // Comissão do afiliado (30% do valor pago)
+  createdAt        DateTime @default(now())
+
+  affiliateCodeId String
+  affiliateCode   AffiliateCode @relation(fields: [affiliateCodeId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  paymentId String  @unique
+  payment   Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@map("affiliate_usages")
+}
