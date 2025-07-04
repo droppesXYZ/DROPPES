@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       // Permitir admin autenticado via Stack Auth
       const userOrError = await getUserOrError();
       if (!(userOrError instanceof NextResponse)) {
-        const userEmail = userOrError.primaryEmail;
+        const userEmail = userOrError.email;
         if (userEmail) {
           const user = await userService.findByEmail(userEmail)
           if (user?.isAdmin) isAuthorized = true
